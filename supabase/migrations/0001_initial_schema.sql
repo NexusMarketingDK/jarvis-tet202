@@ -243,3 +243,7 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- The trigger runs as the table owner; the function must never be callable as
+-- an RPC by clients. Revoke EXECUTE so only the trigger (owner) can run it.
+revoke execute on function public.handle_new_user() from anon, authenticated, public;
