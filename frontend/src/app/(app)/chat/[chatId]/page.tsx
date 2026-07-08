@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
+import type { JarvisAction } from '@jarvis/shared';
 import { ChatWindow } from '@/components/chat/ChatWindow';
 import type { UiMessage } from '@/hooks/useChat';
 import { createClient } from '@/lib/supabase/server';
@@ -28,13 +29,16 @@ export default async function ChatPage({ params }: { params: { chatId: string } 
     notFound();
   }
 
+  // DB columns are text/jsonb; narrow to the shared domain types at this boundary.
   const initialMessages: UiMessage[] = (messages ?? [])
     .filter((m) => m.role !== 'system')
     .map((m) => ({
       id: m.id,
       role: m.role as 'user' | 'assistant',
       content: m.content,
-      action: m.action ? { action: m.action, requiresConfirmation: false } : null,
+      action: m.action
+        ? { action: m.action as unknown as JarvisAction, requiresConfirmation: false }
+        : null,
     }));
 
   return (

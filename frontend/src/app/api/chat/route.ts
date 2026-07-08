@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   const memories: Memory[] = (memoryRows ?? []).map((m) => ({
     id: m.id,
     userId: m.user_id,
-    category: m.category,
+    category: m.category as Memory['category'],
     key: m.key,
     value: m.value,
     importance: m.importance,
