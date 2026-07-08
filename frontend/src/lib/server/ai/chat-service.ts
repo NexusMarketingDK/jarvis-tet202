@@ -4,9 +4,9 @@ import { actionRequiresConfirmation, dispatchAction } from '@/lib/server/actions
 import { buildSystemPrompt } from './system-prompt';
 import { jarvisTools } from './tools';
 
-const MODEL = 'claude-sonnet-4-5';
+const MODEL = 'claude-sonnet-5';
 const MAX_TOOL_ROUNDS = 4;
-const MAX_OUTPUT_TOKENS = 2048;
+const MAX_OUTPUT_TOKENS = 4096;
 
 export interface ChatTurnParams {
   userId: string;
@@ -41,6 +41,10 @@ export async function runChatTurn(params: ChatTurnParams): Promise<string> {
     const stream = anthropic.messages.stream({
       model: MODEL,
       max_tokens: MAX_OUTPUT_TOKENS,
+      // Snappy assistant: keep the whole token budget for the reply. On current
+      // models adaptive thinking is on by default when `thinking` is omitted,
+      // which would spend part of max_tokens on reasoning and add latency.
+      thinking: { type: 'disabled' },
       system,
       tools: jarvisTools,
       messages,
