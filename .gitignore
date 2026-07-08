@@ -1,18 +1,32 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# Dependencies
+node_modules/
 
-# Other files and folders
-.settings/
+# Builds
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# Environment
+.env
+.env.local
+.env.*.local
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Vercel
+.vercel/
+
+# Supabase local
+supabase/.temp/

@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-slate-200 antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 110%, rgba(56, 189, 248, 0.05), transparent);
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-700/60;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border border-line bg-surface/70 shadow-glass backdrop-blur-glass;
+  }
+
+  /* Markdown rendering inside assistant chat bubbles */
+  .prose-jarvis :is(p, ul, ol, pre, blockquote) {
+    @apply my-2 first:mt-0 last:mb-0;
+  }
+  .prose-jarvis :is(ul, ol) {
+    @apply list-inside list-disc pl-2;
+  }
+  .prose-jarvis ol {
+    @apply list-decimal;
+  }
+  .prose-jarvis a {
+    @apply text-arc underline underline-offset-2;
+  }
+  .prose-jarvis code {
+    @apply rounded bg-background/70 px-1 py-0.5 font-mono text-[0.85em] text-arc;
+  }
+  .prose-jarvis pre {
+    @apply overflow-x-auto rounded-lg bg-background/80 p-3;
+  }
+  .prose-jarvis pre code {
+    @apply bg-transparent p-0 text-slate-200;
+  }
+  .prose-jarvis :is(h1, h2, h3, h4) {
+    @apply mb-2 mt-4 font-semibold text-white first:mt-0;
+  }
+  .prose-jarvis table {
+    @apply my-2 w-full border-collapse text-left;
+  }
+  .prose-jarvis :is(th, td) {
+    @apply border border-line px-2 py-1;
+  }
+}
