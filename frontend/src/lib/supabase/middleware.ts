@@ -45,7 +45,9 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     const { pathname } = request.nextUrl;
-    const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+    // The root `/` is the public marketing landing page; everything else in
+    // PUBLIC_PATHS is matched by prefix.
+    const isPublic = pathname === '/' || PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 
     if (!user && !isPublic && !pathname.startsWith('/api')) {
       const url = request.nextUrl.clone();
