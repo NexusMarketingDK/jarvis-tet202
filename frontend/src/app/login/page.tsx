@@ -13,26 +13,49 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
+    setNotice(null);
     setLoading(true);
-    const supabase = createClient();
 
-    const { error: authError } =
-      mode === 'login'
-        ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({ email, password });
+    try {
+      const supabase = createClient();
 
-    setLoading(false);
-    if (authError) {
-      setError(authError.message);
-      return;
+      const { data, error: authError } =
+        mode === 'login'
+          ? await supabase.auth.signInWithPassword({ email, password })
+          : await supabase.auth.signUp({ email, password });
+
+      if (authError) {
+        setError(authError.message);
+        return;
+      }
+
+      // With "Confirm email" enabled in Supabase, signUp returns no session –
+      // the user must confirm via email first. Tell them instead of silently
+      // bouncing back to the login screen.
+      if (!data.session) {
+        setNotice(
+          mode === 'signup'
+            ? 'Konto oprettet. Tjek din email for at bekræfte, og log derefter ind.'
+            : 'Din email er ikke bekræftet endnu. Tjek din indbakke.',
+        );
+        return;
+      }
+
+      router.push('/dashboard');
+      router.refresh();
+    } catch {
+      setError(
+        'Kunne ikke kontakte Supabase. Er NEXT_PUBLIC_SUPABASE_URL og ANON_KEY sat for dette deploy?',
+      );
+    } finally {
+      setLoading(false);
     }
-    router.push('/dashboard');
-    router.refresh();
   }
 
   return (
@@ -81,6 +104,11 @@ export default function LoginPage() {
           </div>
 
           {error && <p className="text-sm text-red-400">{error}</p>}
+          {notice && (
+            <p className="rounded-lg border border-arc/30 bg-arc-soft/50 px-3 py-2 text-sm text-arc">
+              {notice}
+            </p>
+          )}
 
           <button
             type="submit"
